@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.22.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Forward Proxy What is Forward Proxy?A Forward Proxy acts as a bridge between the client side and the server side. All requests from the client side sent to proxy server which then forwards them to the">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Forawrd Proxy and Reverse Proxy in system design">
+<meta property="og:url" content="http://example.com/system-design/forward-and-reverse-proxy/index.html">
+<meta property="og:site_name" content="Fandix&#39;s Blog">
+<meta property="og:description" content="Forward Proxy What is Forward Proxy?A Forward Proxy acts as a bridge between the client side and the server side. All requests from the client side sent to proxy server which then forwards them to the">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://ithelp.ithome.com.tw/upload/images/20250218/20124767RGyo6xkbfM.png">
+<meta property="og:image" content="https://ithelp.ithome.com.tw/upload/images/20250219/20124767cQPxjA1Wfq.png">
+<meta property="og:image" content="https://ithelp.ithome.com.tw/upload/images/20250219/20124767n9kwp9iwaB.png">
+<meta property="article:published_time" content="2025-02-18T07:33:22.000Z">
+<meta property="article:modified_time" content="2025-02-19T09:44:34.336Z">
+<meta property="article:author" content="Fandix Huang">
+<meta property="article:tag" content="system design">
+<meta property="article:tag" content="proxy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ithelp.ithome.com.tw/upload/images/20250218/20124767RGyo6xkbfM.png">
+
+
+<link rel="canonical" href="http://example.com/system-design/forward-and-reverse-proxy/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/system-design/forward-and-reverse-proxy/","path":"/system-design/forward-and-reverse-proxy/","title":"Forawrd Proxy and Reverse Proxy in system design"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Forawrd Proxy and Reverse Proxy in system design | Fandix's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Fandix's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Share website backend technologies (Rails, design pattern, system design...)</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Forward-Proxy"><span class="nav-number">1.</span> <span class="nav-text">Forward Proxy</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-Forward-Proxy"><span class="nav-number">1.1.</span> <span class="nav-text">What is Forward Proxy?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-benefits-does-Forward-Proxy-provide"><span class="nav-number">1.2.</span> <span class="nav-text">What benefits does Forward Proxy provide?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implementation-forward-proxy-server"><span class="nav-number">1.3.</span> <span class="nav-text">Implementation forward proxy server</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reverse-Proxy"><span class="nav-number">2.</span> <span class="nav-text">Reverse Proxy</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BTW"><span class="nav-number">2.1.</span> <span class="nav-text">BTW</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-benefits-does-Reverse-Proxy-provide"><span class="nav-number">2.2.</span> <span class="nav-text">What benefits does Reverse Proxy provide?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implementation-reverse-proxy-server"><span class="nav-number">2.3.</span> <span class="nav-text">Implementation reverse proxy server</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Compare-between-forward-and-reverse-proxy"><span class="nav-number">3.</span> <span class="nav-text">Compare between forward and reverse proxy</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fandix Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/system-design/forward-and-reverse-proxy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fandix Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fandix's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Forawrd Proxy and Reverse Proxy in system design | Fandix's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Forawrd Proxy and Reverse Proxy in system design
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-02-18 15:33:22" itemprop="dateCreated datePublished" datetime="2025-02-18T15:33:22+08:00">2025-02-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2025-02-19 17:44:34" itemprop="dateModified" datetime="2025-02-19T17:44:34+08:00">2025-02-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/system-design/" itemprop="url" rel="index"><span itemprop="name">system design</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="Forward-Proxy"><a href="#Forward-Proxy" class="headerlink" title="Forward Proxy"></a>Forward Proxy</h1><p><img src="https://ithelp.ithome.com.tw/upload/images/20250218/20124767RGyo6xkbfM.png" alt="Forward Proxy"></p>
+<h2 id="What-is-Forward-Proxy"><a href="#What-is-Forward-Proxy" class="headerlink" title="What is Forward Proxy?"></a>What is Forward Proxy?</h2><p>A Forward Proxy acts as a bridge between the client side and the server side. All requests from the client side sent to proxy server which then forwards them to the server side.</p>
+<span id="more"></span>
+<p>This setup allows the proxy to manage traffic, enhance security and keep client requests anonymous.</p>
+<h2 id="What-benefits-does-Forward-Proxy-provide"><a href="#What-benefits-does-Forward-Proxy-provide" class="headerlink" title="What benefits does Forward Proxy provide?"></a>What benefits does Forward Proxy provide?</h2><p>Imagine a classroom where the teacher represents the server side, the classmates represent client requests, and the class leader acts as the forward proxy server.<br>Instead of each classmates asking the teacher questions directly, they relay questions to the class leader.The class leader forward all qeustions to the teacher. The teacher answers questions back to the class leader, whe then response them to classmates.</p>
+<ol>
+<li><p><strong>Anonymity and Privacy</strong>: Since all requests come from the forward proxy server, the server side can’t know which client made the request. This system helps maintain client anonymous.</p>
+<blockquote>
+<p>The teacher only know that the questions come from the class leader, but can’t know which classmate originally asked them.</p>
+</blockquote>
+</li>
+<li><p><strong>Bypassing access restrictions</strong>: Although the server side has access restrictions in place, client can still send requests to the proxy server. Since the server can’t know which client made this request, only know the reqeust come from proxy server, this setup allows clients to bypass access restrictions.</p>
+<blockquote>
+<p>Even if the teacher is only supposed to answer questions from their own students, a student who from another class can still ask question through the class leader. The class leader then forward this question to the teacher.<br> Since Teacher can’t know who originally asked this quesiton (even asked by other class’s student) and the teacher only know the question come from class leader, students from other classes can also get theri questions answered.</p>
+</blockquote>
+</li>
+<li><p><strong>Filter content and cache</strong>: The proxy server can cache responses after accessing the server. This allows that proxy to return cached responses directly when a client requests the same resource again, without needing to access the server repeatedly.<br>This system helps reduces bandwidth consumption and improves efficiency.</p>
+<blockquote>
+<p>If many students want to ask the same question without a class leader, the teacher would have to answer the same question repeatedly.<br> Instead, the class leader can first receive this question, forward it to the teacher, and get answer. Once the class leader knows the answer it can respond directly to classmates without needing to ask the teacher again.</p>
+</blockquote>
+</li>
+<li><p><strong>Monitor and filter traffic to improve server side security</strong>: Since all requests must go through the proxy server, it can monitor and record the source of requests and enforce limitations if necessary. This system helps enhance server secuirty by filting traffic and preventing unauthorized access</p>
+<blockquote>
+<p>Since all questions from classmates must go through the class leader, the class leader can filter out meaningful questions and eliminate malicious ones. This process helps protect the teacher by preventing unnecessary or harmful questions from reaching them</p>
+</blockquote>
+</li>
+<li><p><strong>protocol translation</strong>: Even if the server uses the HTTPS protocol, not all clients support HTTPS. Client who only support HTTP would fail to access the server directly. However, they can route their reqeusts through the proxy server, which translates HTTP into HTTPS. SInce the server only know requests coming from the proxy server and recognizes the reqeusts as HTTPS, the server can responds it without knowing that the original reqeuet was. </p>
+<blockquote>
+<p>In a bilingual school, the teacher is from the USA and only speaks English, while some students only speak Chinese. If these students need to ask questions, they must go through the class leader who can speak both Enghish and Chinese. The class leader translates their questions into English before asking the teacher and then translates the teacher’s response back into Chinese for the students.</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="Implementation-forward-proxy-server"><a href="#Implementation-forward-proxy-server" class="headerlink" title="Implementation forward proxy server"></a>Implementation forward proxy server</h2><p>I created a sample forward proxy server using Node.js. This project was developed to verify and implement the benefits of a forward proxy server, such as request routing, caching, security filtering.</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Fandix/forward_proxy_project">forward_proxy_project</a></p>
+<hr>
+<h1 id="Reverse-Proxy"><a href="#Reverse-Proxy" class="headerlink" title="Reverse Proxy"></a>Reverse Proxy</h1><p><img src="https://ithelp.ithome.com.tw/upload/images/20250219/20124767cQPxjA1Wfq.png" alt="reverse proxy"><br>A reverse proxy also acts as a bridge between the client side and the server side. All requests from the client side sent to the proxy server which then forwards them to the appropriate server.<br>Unlike the forward proxy where the server can’t identify the original cient, in a reverse proxy setup, the client doesn’t know which specific server handels the request.</p>
+<h2 id="BTW"><a href="#BTW" class="headerlink" title="BTW"></a>BTW</h2><p>As the website grows in popularity, a single request can quickly multiply into hundreds of thousands of reqeusts. One server alone may not be sufficient to handle this load, so upgrades are necessary.<br>There ary two type of upgrades, vertical expansion and horizontal expansion.</p>
+<ul>
+<li><strong>vertical expansion</strong>: vertical expansion is upgrading a single server to make it more powerful, enabling it to handle large reqeusts more quickly and efficiently.</li>
+<li><strong>horizontal expansion</strong>: Horizontal expansion is distributing the workload across many servers. Each server is either responsibility for a specific task or shares the large volume of request at same time. This approach enhances scalability and reliability by balancing the load among many servers.</li>
+</ul>
+<p>Although both approaches can resolve server blocking issues caused by large or requests, vertical expansion is more costly. Therefore, horizontal expansion is generally preferred for upgrading servers to enhance their capacity and performace</p>
+<h2 id="What-benefits-does-Reverse-Proxy-provide"><a href="#What-benefits-does-Reverse-Proxy-provide" class="headerlink" title="What benefits does Reverse Proxy provide?"></a>What benefits does Reverse Proxy provide?</h2><p>imagine a bank representing the server side, the customer service center acting as the reverse proxy and clients with account-related questions as internet requests.</p>
+<ol>
+<li><strong>Load Balancing</strong>: When a large volume of requests access the reverse proxy, it can use specialized techniques to distribute the requests across multiple servers. This system helps prevent any single server blocking cause faced large volume of requests, ensuring better load balancing and avoiding blocking during high-traffic periods<blockquote>
+<p>When a large number of clients call with account-related questions, the customer service center can distribute the calls across multiple department. For example, calls about savings accounts can be routed to the saving-account department, while investment-related inquiries are directed to the investment department. This approach ensures that each request is handled by the most relevant department, optimizing efficiency  and preventing any single department overload.</p>
+</blockquote>
+</li>
+<li><strong>Caching</strong>: Just like the forward proxy can cache responses after accessing the server. This allows that proxy to return cached responses directly when a client requests the same resource again, without needing to access the server repeatedly. This system helps reduces bandwidth consumption and improves efficiency.</li>
+<li><strong>SSL Encryption and Decryption</strong>: SSL&#x2F;TLS encryption and decryption can be centrally managed in the reverse proxy, allowing the the server to handle requests without the need for decryption. This approach reduces the server’s processing load, enhancing its overall performance and efficiency.<blockquote>
+<p>Every clients needs to validate their identity before their issue can be handled by the related department. The identity validation can be centrally operated in the customer service center. This way, each department can focus solely on solving the problem without needing to handle identiry validation.</p>
+</blockquote>
+</li>
+<li><strong>Dynamic load balancing and failover</strong>: The reverse proxy monitors the health of servers. If a server encounters an error and not able to handle requests, the reverse proxy redirects the reqeusts to other healthy servers. This system helps ensures continuous service availability and improves system reliability.<blockquote>
+<p>If all employees in a department go to lunch, the customer service center can redirects the calls or problems to another department for handling. This ensure that no issue is left unattended, even when one department is temporarily unavailable</p>
+</blockquote>
+</li>
+<li><strong>Hide the server side to increase system security</strong>: Because all requests must go through reverse proxy, client can’t know which server is handling the request. This systems helps conceal the server-side architecture, enhancing security by preventing direct access to the servers.<blockquote>
+<p>Since all clients must go through the customer service center, they can’t know which specific department is handling the issue. This system helps conceal the internal structure of the bank, protecting sensitive operational details.</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="Implementation-reverse-proxy-server"><a href="#Implementation-reverse-proxy-server" class="headerlink" title="Implementation reverse proxy server"></a>Implementation reverse proxy server</h2><p>I created a sample reverse proxy server using Node.js. This project was developed to verify and implement the benefits of a reverse proxy server, such as load balancing, caching, dynamic load balancing and failover.</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Fandix/Reverse-Proxy-Project">Reverse-Proxy-Project</a></p>
+<hr>
+<h1 id="Compare-between-forward-and-reverse-proxy"><a href="#Compare-between-forward-and-reverse-proxy" class="headerlink" title="Compare between forward and reverse proxy"></a>Compare between forward and reverse proxy</h1><p><img src="https://ithelp.ithome.com.tw/upload/images/20250219/20124767n9kwp9iwaB.png" alt="compare between forward and reverse"><br>Both types of proxy servers act as a bridge between the client side and the server side, but they serve different purposes:</p>
+<ul>
+<li><p><strong>Forward Proxy</strong>: It hides the client’s information, enhancing privacy and security on the client side. Forward proxies are suitable for <u>maintaininga anonymity and bypassing access restrictions</u>.</p>
+</li>
+<li><p><strong>Reverse Proxy</strong>: It hides the server’s information, enhancing scalability and reliability by distributing request across multiple servers. Reverse proxies are suitable for <u>managing large volumes of requests and balancing traffing traffic efficiently</u>.</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/system-design/" rel="tag"># system design</a>
+              <a href="/tags/proxy/" rel="tag"># proxy</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/Ruby/ruby-multi-thread/" rel="prev" title="Ruby Multi Thread">
+                  <i class="fa fa-angle-left"></i> Ruby Multi Thread
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fandix Huang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
