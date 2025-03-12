@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.22.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="What is Nginx?Nginx is an open-source Web Server and Reverse Proxy Server. It is famous for its high performance and high scalability. It has become the most popular Web Server besides Apache. It is r">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Nginx">
+<meta property="og:url" content="http://example.com/Nginx/nginx/index.html">
+<meta property="og:site_name" content="Fandix&#39;s Blog">
+<meta property="og:description" content="What is Nginx?Nginx is an open-source Web Server and Reverse Proxy Server. It is famous for its high performance and high scalability. It has become the most popular Web Server besides Apache. It is r">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://ithelp.ithome.com.tw/upload/images/20250312/20124767fs4jW8fYht.png">
+<meta property="og:image" content="https://ithelp.ithome.com.tw/upload/images/20250312/20124767hTjbx8i5Ow.png">
+<meta property="og:image" content="https://ithelp.ithome.com.tw/upload/images/20250312/20124767nAzDZA6ifS.png">
+<meta property="article:published_time" content="2025-03-12T06:41:36.000Z">
+<meta property="article:modified_time" content="2025-03-12T08:22:48.484Z">
+<meta property="article:author" content="Fandix Huang">
+<meta property="article:tag" content="system design">
+<meta property="article:tag" content="proxy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ithelp.ithome.com.tw/upload/images/20250312/20124767fs4jW8fYht.png">
+
+
+<link rel="canonical" href="http://example.com/Nginx/nginx/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/Nginx/nginx/","path":"/Nginx/nginx/","title":"Nginx"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Nginx | Fandix's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Fandix's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Share website backend technologies (Rails, design pattern, system design...)</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-Nginx"><span class="nav-number">1.</span> <span class="nav-text">What is Nginx?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#The-Nginx-Process-Model"><span class="nav-number">2.</span> <span class="nav-text">The Nginx Process Model</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Master-Process"><span class="nav-number">2.1.</span> <span class="nav-text">Master Process</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Worker-Process"><span class="nav-number">2.2.</span> <span class="nav-text">Worker Process</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cache-Worker-Processes"><span class="nav-number">2.3.</span> <span class="nav-text">Cache Worker Processes</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Cache-Manager-Process"><span class="nav-number">2.3.1.</span> <span class="nav-text">Cache Manager Process</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cache-Loader-Process"><span class="nav-number">2.3.2.</span> <span class="nav-text">Cache Loader Process</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#How-does-the-Nginx-work"><span class="nav-number">3.</span> <span class="nav-text">How does the Nginx work?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Traditional-server-architecture-Apache%E2%80%99s-prefork"><span class="nav-number">3.1.</span> <span class="nav-text">Traditional server architecture (Apache’s prefork)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-about-Nginx"><span class="nav-number">3.2.</span> <span class="nav-text">How about Nginx?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Event-Driven-Programming-in-Nginx"><span class="nav-number">3.3.</span> <span class="nav-text">Event-Driven Programming in Nginx</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#How-nginx-prcess-requerst-by-Event-Driven"><span class="nav-number">3.3.1.</span> <span class="nav-text">How nginx prcess requerst by Event-Driven?</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">4.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fandix Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/Nginx/nginx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fandix Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fandix's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Nginx | Fandix's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Nginx
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2025-03-12 14:41:36 / Modified: 16:22:48" itemprop="dateCreated datePublished" datetime="2025-03-12T14:41:36+08:00">2025-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Nginx/" itemprop="url" rel="index"><span itemprop="name">Nginx</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="What-is-Nginx"><a href="#What-is-Nginx" class="headerlink" title="What is Nginx?"></a>What is Nginx?</h1><p>Nginx is an open-source Web Server and Reverse Proxy Server. It is famous for its high performance and high scalability. It has become the most popular Web Server besides Apache. It is responsible for acting as a bridge between the Client and the Server and can perform multiple proxy functions such as HTTP&#x2F;HTTPS request, Load Balancing and Cache.</p>
+<p>This chapter is more inclined to explore the internal architecture of Nginx. From the perspective of Nginx architecture, we can understand the types of Nginx workers, how Nginx receives and handles the problem of simultaneous C10K, and so on.</p>
+<span id="more"></span>
+
+<h1 id="The-Nginx-Process-Model"><a href="#The-Nginx-Process-Model" class="headerlink" title="The Nginx Process Model"></a>The Nginx Process Model</h1><p>Nginx has two part, master process and worker process.</p>
+<p><img src="https://ithelp.ithome.com.tw/upload/images/20250312/20124767fs4jW8fYht.png" alt="Nginx Process"></p>
+<h2 id="Master-Process"><a href="#Master-Process" class="headerlink" title="Master Process"></a>Master Process</h2><p>Master process is responsible for coordinating and managing the worker processes. It listen requests and manage the configuration and overall operation of the worker process.</p>
+<ul>
+<li>Read and validate configuration when Nginx starts</li>
+<li>Operate the socket that receives the request (add, bind, close)</li>
+<li>Start, terminate and maintain the worker processes and manage the number of worker processes</li>
+<li>Support and implement update Nginx configuration dynamically</li>
+</ul>
+<h2 id="Worker-Process"><a href="#Worker-Process" class="headerlink" title="Worker Process"></a>Worker Process</h2><p>Compare with the Master process, the worker process has a relatively simple tasks. Its main purpose is to process the request from the client, provide feature of reverse proxy and filter responses from the Server. In short, all the feature of Nginx actual application is completed through the Worker Processes.</p>
+<ol>
+<li>After Nginx receives the request, The Master Process assigns this request to one of the Worker Process</li>
+<li>The Worker process checks if the request hits the cache by The Cache key</li>
+<li>If the cache is hit, the Worker Process will read the cache content instead of sending the request to the backend server (Web Server).</li>
+<li>The Worker Process will return cache content to the client. <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line">X-Cache: HIT</span><br><span class="line">Content-Type: text/html</span><br></pre></td></tr></table></figure></li>
+<li>If it doesn’t hit, the request is forwarded to the subsequent server</li>
+</ol>
+<h2 id="Cache-Worker-Processes"><a href="#Cache-Worker-Processes" class="headerlink" title="Cache Worker Processes"></a>Cache Worker Processes</h2><p>Nginx’s Cache worker can temporarily store previously processed responses in memory or disks. When a request accesses the response, Nginx can direct obtain the previously store content without access backend server again, which can effectively improve access efficiency.</p>
+<h3 id="Cache-Manager-Process"><a href="#Cache-Manager-Process" class="headerlink" title="Cache Manager Process"></a>Cache Manager Process</h3><p>The Cache Manager Process is a system which used to manage caches. It periodically checks cached contents that which content are expired or no longer used, and delete them to avoid the cache from becoming too large.</p>
+<h3 id="Cache-Loader-Process"><a href="#Cache-Loader-Process" class="headerlink" title="Cache Loader Process"></a>Cache Loader Process</h3><p>The Cache Loader Process is used to store responses from Web Server or other sources into Cache. After Nginx starts, Cache Loader Process will scan the cache directory and load the contents into memory. After complecation, the Process will exit. </p>
+<hr>
+<h1 id="How-does-the-Nginx-work"><a href="#How-does-the-Nginx-work" class="headerlink" title="How does the Nginx work?"></a>How does the Nginx work?</h1><h2 id="Traditional-server-architecture-Apache’s-prefork"><a href="#Traditional-server-architecture-Apache’s-prefork" class="headerlink" title="Traditional server architecture (Apache’s prefork)"></a>Traditional server architecture (Apache’s prefork)</h2><p>In the traditional server model, the server will create a separate thread or process for each request to handle it. This dedicated thread or process will block other requests during the request processing until the request is completed.</p>
+<p>Although this allow a thread or process focus on single request, this behavior is sometimes very inefficient. Create a thread or process for single request requires a lot of resources (allocating memory, creating a new execution environment…). Creating those resources will consume CPU time and it will also cause race condition or poor performance when switching between different threads or processes.</p>
+<h2 id="How-about-Nginx"><a href="#How-about-Nginx" class="headerlink" title="How about Nginx?"></a>How about Nginx?</h2><p>Nginx doesn’t create new process for each request, instead of create specified number of workers (usually the number of CPUs) according to the configuration when Nginx starts</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">worker_processes auto;</span><br></pre></td></tr></table></figure>
+<p>This ensure that each workers uses a core of CPU separately, and there will be no problem of insufficient source. All the workers will be ready to receive the requests and Nginx will assigns requests to workers in different ways through configuration.</p>
+<ol>
+<li><strong>accept_mutex</strong>: If accept mutex is enabled, the workers will <code>take turns receiving requests</code>. It helps reduce worker’s competition for requests and ensure load balancing among workers.</li>
+<li><strong>reuseport</strong>: Can set reuseport to make each worker listens to a different port to avoid multi workers waiting for requests from the same port. If the traffic on a specific port is very large, can set multi workers to listen to this port together and distribute requests to those workers randomly or in a round-robin manner.<br><img src="https://ithelp.ithome.com.tw/upload/images/20250312/20124767hTjbx8i5Ow.png" alt="reuseport"></li>
+<li><strong>worker_connections</strong>: Nginx will adjust who to receive the request based on  the load of each worker. If a worker handles too many requests, the next request won’t send to this worker, will be sent to a worker with a relatively low load for processing, but this distribution will <code>not strictly guarantee load balancing</code>.</li>
+</ol>
+<p>Although Nginx is not like traditional server which create a new thread or process for a request, when will the worker send the response back to the client after receiving the request?<br>This is another design of Nginx that can achieve this is introduced, which is event-driven. </p>
+<p>Nginx continuously receives requests in an asynchronous manner and sends the responses back to the client in an event-driven manner, which is somewhat similar to the event loop concept of JavaScript for handling asynchronous tasks.</p>
+<h2 id="Event-Driven-Programming-in-Nginx"><a href="#Event-Driven-Programming-in-Nginx" class="headerlink" title="Event-Driven Programming in Nginx"></a>Event-Driven Programming in Nginx</h2><p>Event-Driven is a software design pattern, this design pattern allow applications to handles events in an asynchronous manner, unlike the traditional blocking mode, need to wait until previous task to complete before executing the next one.</p>
+<p>Nginx uses an event-driven architecture, which allows it to handle a large number of concurrent requests (high concurrency requests) at the same time without affecting other requests due to waiting for a certain request to complete. Nginx will repeatedly check if there are new events or responses returned. If there are, it will perform corresponding processing according to the Configuration settings (prioritize request processing, priority response return…).<br><img src="https://ithelp.ithome.com.tw/upload/images/20250312/20124767nAzDZA6ifS.png" alt="Event-Driven"></p>
+<h3 id="How-nginx-prcess-requerst-by-Event-Driven"><a href="#How-nginx-prcess-requerst-by-Event-Driven" class="headerlink" title="How nginx prcess requerst by Event-Driven?"></a>How nginx prcess requerst by Event-Driven?</h3><p>Nginx processes requests coming into the worker through Asynchronous I&#x2F;O and Event Loop. The main process is as follows:</p>
+<ol>
+<li><strong>Master Worker Process receives request</strong><ul>
+<li>When the client sends a request, the Nginx Master Worker Process receives these requests in a non-blocking manner and puts them in the event-queue.</li>
+</ul>
+</li>
+<li><strong>The worker process will not wait for this request to complete.</strong><ul>
+<li>Unlike the traditional blocking mode, the worker process will not be stuck waiting for the request to be completed, but will continue to receive new requests. The advantage of this is that even if it takes a long time to process a request, the worker process will not be stuck and can continue to receive other requests.</li>
+</ul>
+</li>
+<li><strong>Event loop continuously checks the status of the request</strong><ul>
+<li>Worker manages all received requests through epoll (Linux) or kqueue (BSD&#x2F;macOS)</li>
+<li>If the server returns a response, Nginx will perform corresponding operations based on the configuration and request type (return static files to the client, forward the request again…)</li>
+</ul>
+</li>
+<li><strong>Send back large amounts of data in chunks</strong><ul>
+<li>If the Worker receives a large amount of response data from the Server, it will use chunked transfer encoding to ensure that the returned data is transmitted step by step instead of returning a large packet of data to the client at once, increasing the reliability of the client receiving data.</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@soulaimaneyh/nginx-internal-architecture-b94b013bc365">SoulaimaneyhExplaining Nginx Internal Architecture</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.nginx.org/blog/inside-nginx-how-we-designed-for-performance-scale">NGINX Community BlogInside NGINX: How We Designed for Performance &amp; Scale</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.nginx.org/blog/performance-tuning-tips-tricks">NGINX Community BlogPerformance Tuning – Tips &amp; Tricks</a></li>
+<li><a target="_blank" rel="noopener" href="https://aosabook.org/en/v2/nginx.html#fig.nginx.arch">The Architecture of Open Source Applications (Volume 2)nginx</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/system-design/" rel="tag"># system design</a>
+              <a href="/tags/proxy/" rel="tag"># proxy</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/system-design/forward-and-reverse-proxy/" rel="prev" title="Forawrd Proxy and Reverse Proxy in system design">
+                  <i class="fa fa-angle-left"></i> Forawrd Proxy and Reverse Proxy in system design
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fandix Huang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
